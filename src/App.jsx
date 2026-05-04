@@ -472,11 +472,11 @@ function Prioritize({ cases, onConfirm, onBack }) {
   };
 
   return (
-    <div style={{ padding: "24px 20px", maxWidth: 560, margin: "0 auto" }}>
+    <div style={{ padding: "24px 20px", maxWidth: 560, margin: "0 auto", fontFamily: "'Segoe UI', system-ui, -apple-system, sans-serif" }}>
       <button onClick={onBack} style={{ fontSize: 12, color: T.slate, background: "none", border: "none", cursor: "pointer", marginBottom: 16, fontFamily: "inherit" }}>← Regresar</button>
       <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: 2, color: T.purple, textTransform: "uppercase", marginBottom: 8 }}>Priorización</div>
       <h2 style={{ fontSize: 22, fontWeight: 800, color: T.black, marginBottom: 8 }}>¿Cuál resolvemos primero?</h2>
-      <p style={{ fontSize: 13, color: T.slate, marginBottom: 24, lineHeight: 1.6 }}>Arrastren los casos del más al menos prioritario. El primero será el caso de uso del POC.</p>
+      <p style={{ fontSize: 13, color: T.slate, marginBottom: 24, lineHeight: 1.6 }}>Arrastren los casos del más al menos prioritario. El primero será el caso de uso de la POC.</p>
       <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 24 }}>
         {ordered.map((c, i) => {
           const plat = c.platform === "other" ? { label: c.platformOther || "Otra", color: T.slate, logo: <span>○</span> } : PLATFORMS.find(p => p.id === c.platform);
@@ -507,7 +507,7 @@ function Prioritize({ cases, onConfirm, onBack }) {
         })}
       </div>
       <button onClick={() => onConfirm(ordered[0])} style={{ width: "100%", padding: "14px", borderRadius: 12, border: "none", background: T.purple, color: T.white, fontSize: 15, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>
-        Confirmar caso de uso del POC →
+        Confirmar caso de uso de la POC →
       </button>
     </div>
   );
@@ -521,16 +521,16 @@ function Summary({ poc, allCases, onBack, onDownload }) {
   const freqLabel = poc.frequency === "Otra" ? poc.frequencyOther : poc.frequency;
 
   return (
-    <div style={{ padding: "24px 20px", maxWidth: 560, margin: "0 auto" }}>
+    <div style={{ padding: "24px 20px", maxWidth: 560, margin: "0 auto", fontFamily: "'Segoe UI', system-ui, -apple-system, sans-serif" }}>
       <button onClick={onBack} style={{ fontSize: 12, color: T.slate, background: "none", border: "none", cursor: "pointer", marginBottom: 16, fontFamily: "inherit" }}>← Regresar</button>
       <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: 2, color: T.green, textTransform: "uppercase", marginBottom: 8 }}>Sesión completada</div>
-      <h2 style={{ fontSize: 22, fontWeight: 800, color: T.black, marginBottom: 4 }}>Alcance del POC</h2>
+      <h2 style={{ fontSize: 22, fontWeight: 800, color: T.black, marginBottom: 4 }}>Alcance de la POC</h2>
       <p style={{ fontSize: 12, color: T.slate, marginBottom: 24 }}>{date} · Equipo de Infraestructura / Plataforma · Telcel</p>
 
       {/* POC */}
       <div style={{ background: T.white, borderRadius: 16, border: `2px solid ${color}`, overflow: "hidden", marginBottom: 20, boxShadow: "0 4px 20px #0000000d" }}>
         <div style={{ background: color, padding: "16px 20px" }}>
-          <div style={{ fontSize: 10, color: "#ffffff99", textTransform: "uppercase", letterSpacing: 1, marginBottom: 2 }}>Caso de uso del POC</div>
+          <div style={{ fontSize: 10, color: "#ffffff99", textTransform: "uppercase", letterSpacing: 1, marginBottom: 2 }}>Caso de uso de la POC</div>
           <div style={{ fontSize: 18, fontWeight: 800, color: T.white }}>{poc.name || "Sin nombre"}</div>
           <div style={{ fontSize: 12, color: "#ffffff99", marginTop: 4 }}>
             {plat?.label} {poc.version && `· v${poc.version}`} {freqLabel && `· ${freqLabel}`}
@@ -542,7 +542,7 @@ function Summary({ poc, allCases, onBack, onDownload }) {
             { label: "Recursos a gestionar", value: poc.resources.length > 0 ? poc.resources.join(", ") + (poc.resourceNote ? `, ${poc.resourceNote}` : "") : "Por definir" },
             { label: "Frecuencia actual", value: freqLabel || "Por definir" },
             { label: "Restricciones técnicas", value: poc.restrictions || "Sin restricciones identificadas" },
-            { label: "Ambiente del POC", value: "No productivo · confirmado" },
+            { label: "Ambiente de la POC", value: "No productivo · confirmado" },
           ].map((row, i, arr) => (
             <div key={i} style={{ padding: "10px 0", borderBottom: i < arr.length - 1 ? `1px solid ${T.mid}` : "none", display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 16 }}>
               <span style={{ fontSize: 11, color: T.slate, flexShrink: 0, marginTop: 1 }}>{row.label}</span>
@@ -553,7 +553,7 @@ function Summary({ poc, allCases, onBack, onDownload }) {
         <div style={{ background: T.slateLight, padding: "14px 20px" }}>
           <div style={{ fontSize: 10, color: T.slate, textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 }}>Resultado esperado</div>
           <div style={{ fontSize: 13, color: T.black, lineHeight: 1.6, fontWeight: 500 }}>
-            Al finalizar el POC, el equipo podrá aprovisionar "{poc.name || "el caso definido"}" en {plat?.label || "la plataforma seleccionada"} en menos de 15 minutos, sin intervención manual y con configuración estandarizada y repetible.
+            Al finalizar la POC, el equipo podrá aprovisionar "{poc.name || "el caso definido"}" en {plat?.label || "la plataforma seleccionada"} de manera automatizada, sin intervención manual y con configuración estandarizada y repetible.
           </div>
         </div>
       </div>
@@ -577,8 +577,8 @@ function Summary({ poc, allCases, onBack, onDownload }) {
       {/* Next step */}
       <div style={{ background: T.purpleDark, borderRadius: 14, padding: "18px 20px", textAlign: "center", marginBottom: 16 }}>
         <div style={{ fontSize: 11, color: "#C4B5FD", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 }}>Siguiente paso</div>
-        <div style={{ fontSize: 16, fontWeight: 800, color: T.white, marginBottom: 4 }}>Propuesta formal</div>
-        <div style={{ fontSize: 12, color: "#DDD6FE" }}>Semana del 12 de mayo</div>
+        <div style={{ fontSize: 16, fontWeight: 800, color: T.white, marginBottom: 4 }}>Arrancar la POC</div>
+        <div style={{ fontSize: 12, color: "#DDD6FE" }}>Definición de prerrequisitos y detalle técnico</div>
       </div>
 
       {/* Export */}
