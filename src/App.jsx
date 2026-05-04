@@ -594,6 +594,21 @@ function Summary({ poc, allCases, onBack, onDownload }) {
   );
 }
 
+// ── Star Wars theme ───────────────────────────────────────────────
+const SW = {
+  bg:       "#000000",
+  bgCard:   "#0a0a1a",
+  bgInput:  "#0d0d1f",
+  yellow:   "#FFE81F",
+  blue:     "#4FC3F7",
+  red:      "#FF4444",
+  green:    "#44FF88",
+  border:   "#1a1a3a",
+  text:     "#E8E8E8",
+  muted:    "#6B7280",
+  purple:   "#9F7AEA",
+};
+
 // ── Main App ─────────────────────────────────────────────────────
 export default function App() {
   const [screen, setScreen] = useState("builder");
@@ -601,8 +616,12 @@ export default function App() {
   const [draft, setDraft] = useState(null);
   const [editingId, setEditingId] = useState(null);
   const [poc, setPoc] = useState(null);
+  const [swMode, setSwMode] = useState(false);
   const topRef = useRef(null);
   const scrollTop = () => setTimeout(() => topRef.current?.scrollIntoView({ behavior: "smooth" }), 50);
+
+  // Inject SW font when needed
+  const swFont = swMode ? "'Courier New', 'Lucida Console', monospace" : "'Segoe UI', system-ui, -apple-system, sans-serif";
 
   const openNew = () => { setDraft(emptyCase()); setEditingId(null); scrollTop(); };
   const openEdit = (c) => { setDraft({ ...c }); setEditingId(c.id); scrollTop(); };
@@ -613,39 +632,104 @@ export default function App() {
   };
   const deleteCase = (id) => setCases(cs => cs.filter(c => c.id !== id));
 
+  // Theme-aware color helpers
+  const th = swMode ? {
+    bg: SW.bg, card: SW.bgCard, input: SW.bgInput,
+    border: SW.border, text: SW.text, muted: SW.muted,
+    accent: SW.yellow, accentLight: "#1a1600", accentMid: SW.yellow,
+    purple: SW.blue, purpleLight: "#001a2a", purpleDark: "#001020",
+    orange: SW.red, orangeLight: "#1a0000",
+    green: SW.green, greenLight: "#001a0a",
+    mid: SW.border, slate: SW.muted, black: SW.text, white: SW.bgCard,
+    slateLight: SW.bgCard,
+  } : {
+    bg: T.white, card: T.white, input: T.white,
+    border: T.mid, text: T.black, muted: T.slate,
+    accent: T.purple, accentLight: T.purpleLight, accentMid: T.purpleMid,
+    purple: T.purple, purpleLight: T.purpleLight, purpleDark: T.purpleDark,
+    orange: T.orange, orangeLight: T.orangeLight,
+    green: T.green, greenLight: T.greenLight,
+    mid: T.mid, slate: T.slate, black: T.black, white: T.white,
+    slateLight: T.slateLight,
+  };
+
   if (screen === "prioritize") return <Prioritize cases={cases} onBack={() => setScreen("builder")} onConfirm={c => { setPoc(c); setScreen("summary"); }} />;
   if (screen === "summary") return <Summary poc={poc} allCases={cases} onBack={() => setScreen("prioritize")} onDownload={() => downloadMd(cases, poc)} />;
 
   return (
-    <div style={{ fontFamily: "'Segoe UI', system-ui, -apple-system, sans-serif", background: T.white, minHeight: "100vh" }}>
+    <div style={{ fontFamily: swFont, background: swMode ? SW.bg : T.white, minHeight: "100vh", transition: "background 0.4s" }}>
       <style>{`
         @keyframes slideIn { from { opacity:0; transform:translateY(-12px); } to { opacity:1; transform:none; } }
+        @keyframes starScroll { from { background-position: 0 0; } to { background-position: 0 -1000px; } }
+        @keyframes saberGlow { 0%,100% { box-shadow: 0 0 8px #4FC3F7; } 50% { box-shadow: 0 0 20px #4FC3F7, 0 0 40px #4FC3F799; } }
         * { box-sizing: border-box; }
         .main-wrap { max-width: 900px; margin: 0 auto; padding: 0 20px 60px; }
         .grid-cases { display: grid; grid-template-columns: 1fr; gap: 12px; }
-        @media(min-width: 640px) {
-          .grid-cases { grid-template-columns: 1fr 1fr; }
-        }
-        @media(min-width: 900px) {
-          .editor-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
-        }
+        @media(min-width: 640px) { .grid-cases { grid-template-columns: 1fr 1fr; } }
+        @media(min-width: 900px) { .editor-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; } }
+        ${swMode ? `
+          input, textarea { background: ${SW.bgInput} !important; color: ${SW.text} !important; border-color: ${SW.border} !important; }
+          input::placeholder, textarea::placeholder { color: ${SW.muted} !important; }
+          button { transition: all 0.2s !important; }
+        ` : ""}
       `}</style>
 
-      <div className="main-wrap">
+      {/* Stars background in SW mode */}
+      {swMode && (
+        <div style={{
+          position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none",
+          backgroundImage: "radial-gradient(1px 1px at 10% 20%, white 0%, transparent 100%), radial-gradient(1px 1px at 30% 60%, white 0%, transparent 100%), radial-gradient(1px 1px at 50% 10%, white 0%, transparent 100%), radial-gradient(1px 1px at 70% 80%, white 0%, transparent 100%), radial-gradient(1px 1px at 90% 40%, white 0%, transparent 100%), radial-gradient(1px 1px at 20% 90%, white 0%, transparent 100%), radial-gradient(1px 1px at 60% 30%, white 0%, transparent 100%), radial-gradient(1px 1px at 80% 70%, white 0%, transparent 100%), radial-gradient(1px 1px at 40% 50%, white 0%, transparent 100%), radial-gradient(1px 1px at 15% 45%, white 0%, transparent 100%), radial-gradient(1px 1px at 55% 65%, white 0%, transparent 100%), radial-gradient(1px 1px at 85% 15%, white 0%, transparent 100%)",
+          opacity: 0.4,
+        }} />
+      )}
+
+      <div className="main-wrap" style={{ position: "relative", zIndex: 1 }}>
         <div ref={topRef} />
 
         {/* Header */}
-        <div style={{ padding: "24px 0 16px", borderBottom: `1px solid ${T.mid}`, marginBottom: 24, display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+        <div style={{
+          padding: "24px 0 16px",
+          borderBottom: `1px solid ${swMode ? SW.border : T.mid}`,
+          marginBottom: 24,
+          display: "flex", justifyContent: "space-between", alignItems: "flex-start",
+        }}>
           <div>
-            <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: 2, color: T.purple, textTransform: "uppercase", marginBottom: 4 }}>4 de mayo · Telcel</div>
-            <h1 style={{ fontSize: 22, fontWeight: 800, color: T.black, margin: 0, lineHeight: 1.2 }}>Constructor de casos</h1>
-            <p style={{ fontSize: 12, color: T.slate, margin: "4px 0 0" }}>Equipo de Infraestructura / Plataforma</p>
+            <div style={{
+              fontSize: 10, fontWeight: 800, letterSpacing: 2,
+              color: swMode ? SW.yellow : T.purple,
+              textTransform: "uppercase", marginBottom: 4,
+            }}>
+              {swMode ? "⭐ MAY THE 4TH · TELCEL ⭐" : "4 de mayo · Telcel"}
+            </div>
+            <h1 style={{ fontSize: 22, fontWeight: 800, color: swMode ? SW.yellow : T.black, margin: 0, lineHeight: 1.2 }}>
+              {swMode ? "CONSTRUCTOR DE CASOS" : "Constructor de casos"}
+            </h1>
+            <p style={{ fontSize: 12, color: swMode ? SW.muted : T.slate, margin: "4px 0 0" }}>
+              {swMode ? "Equipo de Infraestructura · Fuerza Telcel" : "Equipo de Infraestructura / Plataforma"}
+            </p>
           </div>
-          <div style={{ textAlign: "right" }}>
-            <div style={{ fontSize: 28, fontWeight: 900, color: T.purple, lineHeight: 1 }}>{cases.length}</div>
-            <div style={{ fontSize: 10, color: T.slate }}>casos</div>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 8 }}>
+            <div style={{ textAlign: "right" }}>
+              <div style={{ fontSize: 28, fontWeight: 900, color: swMode ? SW.yellow : T.purple, lineHeight: 1 }}>{cases.length}</div>
+              <div style={{ fontSize: 10, color: swMode ? SW.muted : T.slate }}>casos</div>
+            </div>
+            {/* Star Wars toggle */}
+            <button
+              onClick={() => setSwMode(m => !m)}
+              style={{
+                padding: "6px 12px", borderRadius: 20, fontSize: 11, fontWeight: 700, cursor: "pointer",
+                fontFamily: swFont, border: `1.5px solid ${swMode ? SW.yellow : T.mid}`,
+                background: swMode ? "#1a1400" : T.white,
+                color: swMode ? SW.yellow : T.slate,
+                animation: swMode ? "saberGlow 2s infinite" : "none",
+                transition: "all 0.3s",
+              }}
+            >
+              {swMode ? "⚔ Modo normal" : "⭐ May the 4th"}
+            </button>
           </div>
         </div>
+        {/* editor layout below header */}
 
         <div className="editor-layout">
           {/* Left: editor or add button */}
@@ -655,20 +739,33 @@ export default function App() {
             ) : (
               <button onClick={openNew} style={{
                 width: "100%", padding: "18px", borderRadius: 12,
-                border: `2px dashed ${T.purple}`, background: T.purpleLight,
-                color: T.purple, fontSize: 14, fontWeight: 700,
-                cursor: "pointer", fontFamily: "inherit",
-              }}>+ Agregar caso de despliegue</button>
+                border: `2px dashed ${swMode ? SW.yellow : T.purple}`,
+                background: swMode ? "#1a1400" : T.purpleLight,
+                color: swMode ? SW.yellow : T.purple,
+                fontSize: 14, fontWeight: 700,
+                cursor: "pointer", fontFamily: swFont,
+                animation: swMode ? "saberGlow 2s infinite" : "none",
+              }}>{swMode ? "⚔ Agregar caso de despliegue" : "+ Agregar caso de despliegue"}</button>
             )}
           </div>
 
           {/* Right: cases grid + CTA */}
           <div>
             {cases.length === 0 && !draft ? (
-              <div style={{ textAlign: "center", padding: "48px 20px", color: T.slate, border: `1px dashed ${T.mid}`, borderRadius: 12 }}>
-                <div style={{ fontSize: 40, marginBottom: 12 }}>⎈</div>
-                <div style={{ fontSize: 14, fontWeight: 700, color: T.black, marginBottom: 6 }}>Sin casos todavía</div>
-                <div style={{ fontSize: 12, lineHeight: 1.6 }}>Cuando el equipo describa un tipo de despliegue, agrégalo como caso nuevo.</div>
+              <div style={{
+                textAlign: "center", padding: "48px 20px",
+                color: swMode ? SW.muted : T.slate,
+                border: `1px dashed ${swMode ? SW.border : T.mid}`,
+                borderRadius: 12,
+                background: swMode ? SW.bgCard : "transparent",
+              }}>
+                <div style={{ fontSize: 40, marginBottom: 12 }}>{swMode ? "🚀" : "⎈"}</div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: swMode ? SW.yellow : T.black, marginBottom: 6 }}>
+                  {swMode ? "La galaxia espera..." : "Sin casos todavía"}
+                </div>
+                <div style={{ fontSize: 12, lineHeight: 1.6 }}>
+                  {swMode ? "Cuando el equipo describa un tipo de despliegue, agrégalo. Que la fuerza te acompañe." : "Cuando el equipo describa un tipo de despliegue, agrégalo como caso nuevo."}
+                </div>
               </div>
             ) : (
               <>
@@ -685,10 +782,15 @@ export default function App() {
                 {cases.length >= 2 && (
                   <button onClick={() => setScreen("prioritize")} style={{
                     width: "100%", padding: "14px", borderRadius: 12,
-                    border: "none", background: T.purple,
-                    color: T.white, fontSize: 14, fontWeight: 700,
-                    cursor: "pointer", fontFamily: "inherit", marginTop: 8,
-                  }}>Priorizar casos y definir POC →</button>
+                    border: swMode ? `2px solid ${SW.yellow}` : "none",
+                    background: swMode ? "#1a1400" : T.purple,
+                    color: swMode ? SW.yellow : T.white,
+                    fontSize: 14, fontWeight: 700,
+                    cursor: "pointer", fontFamily: swFont, marginTop: 8,
+                    animation: swMode ? "saberGlow 2s infinite" : "none",
+                  }}>
+                    {swMode ? "⭐ Priorizar casos y definir POC →" : "Priorizar casos y definir POC →"}
+                  </button>
                 )}
               </>
             )}
