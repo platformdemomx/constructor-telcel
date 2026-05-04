@@ -22,36 +22,49 @@ const T = {
 // ── Platform definitions ─────────────────────────────────────────
 const PLATFORMS = [
   {
-    id: "ocp", label: "OpenShift", color: "#EE0000",
+    id: "ocp", label: "OpenShift", color: "#333333",
     logo: (
-      <svg viewBox="0 0 40 40" width="28" height="28" fill="none">
-        <circle cx="20" cy="20" r="20" fill="#EE0000"/>
-        <path d="M20 8C13.37 8 8 13.37 8 20s5.37 12 12 12 12-5.37 12-12S26.63 8 20 8zm0 21.6c-5.3 0-9.6-4.3-9.6-9.6S14.7 10.4 20 10.4 29.6 14.7 29.6 20 25.3 29.6 20 29.6z" fill="white"/>
-        <path d="M25.6 15.2l-2.1.77a4.83 4.83 0 00-7 1.57l-2.18.8a7.2 7.2 0 0113.2 1.46l-2.18.8a4.83 4.83 0 00-1.74-5.4zM14.4 24.8l2.1-.77a4.83 4.83 0 007-1.57l2.18-.8a7.2 7.2 0 01-13.2-1.46l2.18-.8a4.83 4.83 0 001.74 5.4z" fill="white"/>
+      <svg viewBox="0 0 40 40" width="30" height="30" fill="none">
+        <circle cx="20" cy="20" r="17" stroke="#333" strokeWidth="2" fill="none"/>
+        <path d="M20 10C14.5 10 10 14.5 10 20s4.5 10 10 10 10-4.5 10-10S25.5 10 20 10zm0 17.5c-4.1 0-7.5-3.4-7.5-7.5s3.4-7.5 7.5-7.5 7.5 3.4 7.5 7.5-3.4 7.5-7.5 7.5z" fill="#333"/>
+        <path d="M23.8 15.2l-1.6.6a3.8 3.8 0 00-5.4 1.2l-1.7.6a5.7 5.7 0 0110.4 1.1l-1.7.6a3.8 3.8 0 00-2-4.1zM16.2 24.8l1.6-.6a3.8 3.8 0 005.4-1.2l1.7-.6a5.7 5.7 0 01-10.4-1.1l1.7-.6a3.8 3.8 0 002 4.1z" fill="#333"/>
       </svg>
     ),
   },
   {
-    id: "k8s", label: "Kubernetes", color: "#326CE5",
+    id: "k8s", label: "Kubernetes", color: "#333333",
     logo: (
-      <svg viewBox="0 0 40 40" width="28" height="28" fill="none">
-        <circle cx="20" cy="20" r="20" fill="#326CE5"/>
-        <path d="M20 8l1.5 8.5h-3L20 8zM20 32l-1.5-8.5h3L20 32zM8 20l8.5-1.5v3L8 20zM32 20l-8.5 1.5v-3L32 20z" fill="white" opacity="0.9"/>
-        <path d="M11.5 11.5l6 6.2-2.1 2.1-6-6.2 2.1-2.1zM28.5 28.5l-6-6.2 2.1-2.1 6 6.2-2.1 2.1zM11.5 28.5l2.1-2.1 6-6.2 2.1 2.1-6 6.2-2.1 2.1zM28.5 11.5l-2.1 2.1-6 6.2-2.1-2.1 6-6.2 2.1-2.1z" fill="white" opacity="0.9"/>
-        <circle cx="20" cy="20" r="3" fill="white"/>
+      <svg viewBox="0 0 40 40" width="30" height="30" fill="none">
+        {/* Outer ring */}
+        <circle cx="20" cy="20" r="17" stroke="#333" strokeWidth="2" fill="none"/>
+        {/* Hub */}
+        <circle cx="20" cy="20" r="3.5" stroke="#333" strokeWidth="2" fill="none"/>
+        {/* 8 spokes with handle grips */}
+        {[0,45,90,135,180,225,270,315].map((angle, i) => {
+          const rad = (angle * Math.PI) / 180;
+          const x1 = 20 + 3.5 * Math.cos(rad);
+          const y1 = 20 + 3.5 * Math.sin(rad);
+          const x2 = 20 + 10.5 * Math.cos(rad);
+          const y2 = 20 + 10.5 * Math.sin(rad);
+          const xg = 20 + 13 * Math.cos(rad);
+          const yg = 20 + 13 * Math.sin(rad);
+          return (
+            <g key={i}>
+              <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="#333" strokeWidth="1.8" strokeLinecap="round"/>
+              <circle cx={xg} cy={yg} r="2.2" fill="#333"/>
+            </g>
+          );
+        })}
       </svg>
     ),
   },
   {
-    id: "gcp", label: "GCP", color: "#1A73E8",
+    id: "gcp", label: "GCP", color: "#333333",
     logo: (
-      <svg viewBox="0 0 40 40" width="28" height="28" fill="none">
-        <circle cx="20" cy="20" r="20" fill="#F8F9FA"/>
-        <path d="M24.5 15h-9L12 20l3.5 5h9l3.5-5-3.5-5z" fill="#4285F4"/>
-        <path d="M20 11l-4.5 4H24.5L20 11z" fill="#EA4335"/>
-        <path d="M15.5 25l-3.5-5H8l7.5 5z" fill="#FBBC05"/>
-        <path d="M24.5 25l3.5-5H32l-7.5 5z" fill="#34A853"/>
-        <circle cx="20" cy="20" r="3" fill="white"/>
+      <svg viewBox="0 0 40 40" width="30" height="30" fill="none">
+        {/* Cloud shape */}
+        <path d="M28 26H13a5 5 0 01-1-9.9A7 7 0 0126 19a4 4 0 012 7z"
+          stroke="#333" strokeWidth="2" fill="none" strokeLinejoin="round"/>
       </svg>
     ),
   },
@@ -59,42 +72,42 @@ const PLATFORMS = [
 
 const FREQUENCIES = ["Diario", "Varias veces/semana", "Semanal", "Ocasional"];
 
-// ── Resources with descriptions ──────────────────────────────────
+// ── Resources with descriptions and examples ─────────────────────
 const RESOURCE_GROUPS = [
   {
     group: "Namespace y proyecto",
     items: [
-      { name: "Namespace", example: "Unidad lógica de aislamiento dentro del clúster. Agrupa todos los recursos de un proyecto: nombre, etiquetas y anotaciones que lo identifican." },
-      { name: "Cuotas CPU / Memoria", example: "Límites de consumo de cómputo asignados al namespace. Definen cuánto CPU y memoria puede usar el proyecto en total (requests y limits)." },
-      { name: "Limit Ranges", example: "Restricciones mínimas y máximas de recursos por cada pod o contenedor individual dentro del namespace, para evitar consumo descontrolado." },
-      { name: "Resource Quotas", example: "Tope máximo de objetos que puede contener el namespace: número de pods, servicios, PVCs, ConfigMaps y otros recursos del clúster." },
+      { name: "Namespace", desc: "Unidad lógica de aislamiento dentro del clúster. Agrupa todos los recursos de un proyecto: nombre, etiquetas y anotaciones que lo identifican.", example: "namespace: proyecto-backend-telcel, labels: team=plataforma, env=dev" },
+      { name: "Cuotas CPU / Memoria", desc: "Límites de consumo de cómputo asignados al namespace. Definen cuánto CPU y memoria puede usar el proyecto en total.", example: "limits.cpu=4, limits.memory=8Gi, requests.cpu=500m, requests.memory=2Gi" },
+      { name: "Limit Ranges", desc: "Restricciones mínimas y máximas de recursos por cada pod o contenedor individual dentro del namespace, para evitar consumo descontrolado.", example: "max cpu por pod: 2 cores, min memoria por contenedor: 128Mi, default request: 250m CPU" },
+      { name: "Resource Quotas", desc: "Tope máximo de objetos que puede contener el namespace en total.", example: "máximo 20 pods, 10 servicios, 5 PVCs, 30 ConfigMaps dentro del namespace" },
     ],
   },
   {
     group: "Identidad y acceso",
     items: [
-      { name: "Usuarios / Grupos", example: "Identidades que tendrán acceso al namespace. Pueden venir del Directorio Activo y se asignan a grupos del proyecto para controlar quién puede operar qué." },
-      { name: "Rolebindings", example: "Vinculación entre un usuario o grupo y un rol dentro del namespace. Define el nivel de acceso: admin, edit o view sobre los recursos del proyecto." },
-      { name: "Service Accounts", example: "Identidad técnica usada por aplicaciones o pipelines para autenticarse contra el clúster o el registry, sin depender de credenciales de usuario." },
-      { name: "RBAC policies", example: "Reglas de control de acceso basado en roles que determinan qué operaciones puede realizar cada identidad sobre recursos específicos del clúster." },
+      { name: "Usuarios / Grupos", desc: "Identidades que tendrán acceso al namespace. Pueden venir del Directorio Activo y se asignan a grupos del proyecto para controlar quién puede operar qué.", example: "grupo AD: dev-backend-telcel → acceso edit al namespace proyecto-backend" },
+      { name: "Rolebindings", desc: "Vinculación entre un usuario o grupo y un rol dentro del namespace. Define el nivel de acceso sobre los recursos del proyecto.", example: "usuario: jperez → rol: admin | grupo: devs-frontend → rol: edit | auditores → rol: view" },
+      { name: "Service Accounts", desc: "Identidad técnica usada por aplicaciones o pipelines para autenticarse contra el clúster o el registry, sin depender de credenciales de usuario.", example: "sa: pipeline-ci-telcel con permisos de pull sobre registry interno y deploy en namespace" },
+      { name: "RBAC policies", desc: "Reglas de control de acceso basado en roles que determinan qué operaciones puede realizar cada identidad sobre recursos específicos del clúster.", example: "ClusterRole: solo lectura de pods y logs | Role: crear y eliminar deployments en namespace propio" },
     ],
   },
   {
     group: "Red",
     items: [
-      { name: "Network Policies", example: "Reglas que controlan el tráfico de red entre namespaces y hacia el exterior. Determinan qué puede comunicarse con qué dentro y fuera del clúster." },
-      { name: "Gateway de salida", example: "Configuración de la IP de salida del namespace hacia servicios externos o redes corporativas. Permite rutas controladas hacia fuera del clúster." },
-      { name: "Ingress / Routes", example: "Punto de entrada externo al namespace. Expone servicios internos mediante una URL pública, con soporte de TLS y balanceo de carga." },
-      { name: "DNS interno", example: "Nombre de dominio interno para que los servicios del proyecto sean resolvibles dentro del clúster sin necesidad de IPs fijas." },
+      { name: "Network Policies", desc: "Reglas que controlan el tráfico de red entre namespaces y hacia el exterior. Determinan qué puede comunicarse con qué dentro y fuera del clúster.", example: "permitir tráfico solo desde namespace frontend → backend, bloquear todo egress excepto BD corporativa" },
+      { name: "Gateway de salida", desc: "Configuración de la IP de salida del namespace hacia servicios externos o redes corporativas. Permite rutas controladas hacia fuera del clúster.", example: "IP de egress fija: 10.20.5.100 con ruta hacia red corporativa 192.168.0.0/16" },
+      { name: "Ingress / Routes", desc: "Punto de entrada externo al namespace. Expone servicios internos mediante una URL, con soporte de TLS y balanceo de carga.", example: "Route: api.interno.telcel.com → servicio backend puerto 8080, TLS terminado en el router" },
+      { name: "DNS interno", desc: "Nombre de dominio interno para que los servicios del proyecto sean resolvibles dentro del clúster sin necesidad de IPs fijas.", example: "servicio: backend-svc.proyecto-backend.svc.cluster.local resolvible desde cualquier namespace autorizado" },
     ],
   },
   {
     group: "Configuración y seguridad",
     items: [
-      { name: "Secrets base", example: "Objetos que almacenan información sensible del proyecto: credenciales de registry, tokens de acceso, contraseñas de base de datos u otros secretos que consumen los contenedores." },
-      { name: "ConfigMaps base", example: "Almacenamiento de configuración no sensible del aplicativo: variables de entorno, archivos de configuración, parámetros de conexión que se inyectan en los pods." },
-      { name: "Imágenes de aplicación", example: "Imagen de contenedor base aprobada por el equipo de plataforma, con su versión y el registro desde el que se permite hacer pull (Quay, DockerHub, registry interno)." },
-      { name: "Registry / Quay", example: "Permisos de acceso al registro de imágenes del equipo. Controla qué service accounts o usuarios pueden hacer pull o push sobre repositorios específicos." },
+      { name: "Secrets base", desc: "Objetos que almacenan información sensible del proyecto que los contenedores necesitan para funcionar, cifrada en etcd.", example: "SECRET_DB_PASSWORD, TOKEN_REGISTRY, CERT_TLS_KEY inyectados como variables de entorno al pod" },
+      { name: "ConfigMaps base", desc: "Almacenamiento de configuración no sensible del aplicativo: parámetros, rutas y variables que se inyectan en los pods sin necesidad de recompilar la imagen.", example: "APP_ENV=production, DB_HOST=bd.telcel.internal, LOG_LEVEL=info, TIMEOUT=30s" },
+      { name: "Imágenes de aplicación", desc: "Imagen de contenedor base aprobada por el equipo de plataforma, con su versión y el registro desde el que se permite hacer pull.", example: "quay.io/telcel/base-java:17-approved, quay.io/telcel/base-node:20-lts, versión fija no latest" },
+      { name: "Registry / Quay", desc: "Permisos de acceso al registro de imágenes del equipo. Controla qué service accounts o usuarios pueden hacer pull o push sobre repositorios específicos.", example: "sa: pipeline-ci → push a quay.io/telcel/proyecto-backend | pods del namespace → solo pull" },
     ],
   },
 ];
@@ -375,7 +388,8 @@ function CaseEditor({ draft, setDraft, onSave, onCancel }) {
                       </div>
                       <span style={{ fontSize: 13, fontWeight: 600, color: selected ? T.purple : T.black }}>{r.name}</span>
                     </div>
-                    <div style={{ fontSize: 11, color: T.slate, marginTop: 4, marginLeft: 28, lineHeight: 1.4 }}>{r.example}</div>
+                    <div style={{ fontSize: 11, color: T.slate, marginTop: 4, marginLeft: 28, lineHeight: 1.5 }}>{r.desc}</div>
+                    <div style={{ fontSize: 10, color: T.purple, marginTop: 4, marginLeft: 28, lineHeight: 1.4, fontStyle: "italic", background: T.purpleLight, borderRadius: 4, padding: "3px 8px", display: "inline-block" }}>Ej: {r.example}</div>
                   </div>
                 );
               })}
@@ -571,7 +585,7 @@ export default function App() {
   if (screen === "summary") return <Summary poc={poc} allCases={cases} onBack={() => setScreen("prioritize")} onDownload={() => downloadMd(cases, poc)} />;
 
   return (
-    <div style={{ fontFamily: "'Georgia', serif", background: T.white, minHeight: "100vh" }}>
+    <div style={{ fontFamily: "'Segoe UI', system-ui, -apple-system, sans-serif", background: T.white, minHeight: "100vh" }}>
       <style>{`
         @keyframes slideIn { from { opacity:0; transform:translateY(-12px); } to { opacity:1; transform:none; } }
         * { box-sizing: border-box; }
