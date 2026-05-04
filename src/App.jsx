@@ -123,6 +123,7 @@ const emptyCase = () => ({
   frequency: "",
   frequencyOther: "",
   resources: [],
+  resourceNotes: {},
   resourceNote: "",
   version: "",
   restrictions: "",
@@ -151,6 +152,13 @@ const toMarkdown = (cases, poc) => {
     md += `| Recursos | ${poc.resources.join(", ")}${poc.resourceNote ? `, ${poc.resourceNote}` : ""} |\n`;
     md += `| Restricciones | ${poc.restrictions || "Sin restricciones identificadas"} |\n`;
     md += `| Ambiente | No productivo · confirmado |\n\n`;
+    if (poc.resourceNotes && Object.keys(poc.resourceNotes).length > 0) {
+      md += `**Notas por recurso:**\n\n`;
+      Object.entries(poc.resourceNotes).forEach(([res, note]) => {
+        if (note) md += `- **${res}:** ${note}\n`;
+      });
+      md += `\n`;
+    }
     md += `**Resultado esperado:** Al finalizar el POC, el equipo podrá aprovisionar "${poc.name}" en ${platLabel(poc.platform, poc.platformOther)} en menos de 15 minutos, sin intervención manual y con configuración estandarizada y repetible.\n\n`;
     if (poc.notes) md += `**Notas:** ${poc.notes}\n\n`;
     md += `---\n\n`;
@@ -165,6 +173,12 @@ const toMarkdown = (cases, poc) => {
     md += `| Recursos | ${c.resources.join(", ")}${c.resourceNote ? `, ${c.resourceNote}` : ""} |\n`;
     md += `| Restricciones | ${c.restrictions || "—"} |\n`;
     if (c.notes) md += `| Notas | ${c.notes} |\n`;
+    if (c.resourceNotes && Object.keys(c.resourceNotes).length > 0) {
+      md += `\n**Notas por recurso:**\n`;
+      Object.entries(c.resourceNotes).forEach(([res, note]) => {
+        if (note) md += `- **${res}:** ${note}\n`;
+      });
+    }
     md += `\n`;
   });
 
@@ -370,26 +384,44 @@ function CaseEditor({ draft, setDraft, onSave, onCancel }) {
               {g.items.map(r => {
                 const selected = draft.resources.includes(r.name);
                 return (
-                  <div key={r.name} onClick={() => toggleResource(r.name)} style={{
-                    padding: "10px 12px", borderRadius: 10,
+                  <div key={r.name} style={{
+                    borderRadius: 10,
                     border: `1.5px solid ${selected ? T.purple : T.mid}`,
                     background: selected ? T.purpleLight : T.white,
-                    cursor: "pointer", transition: "all 0.15s",
+                    transition: "all 0.15s", overflow: "hidden",
                   }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                      <div style={{
-                        width: 18, height: 18, borderRadius: 5, flexShrink: 0,
-                        border: `2px solid ${selected ? T.purple : T.mid}`,
-                        background: selected ? T.purple : T.white,
-                        display: "flex", alignItems: "center", justifyContent: "center",
-                        transition: "all 0.15s",
-                      }}>
-                        {selected && <span style={{ color: T.white, fontSize: 11, lineHeight: 1 }}>✓</span>}
+                    <div onClick={() => toggleResource(r.name)} style={{ padding: "10px 12px", cursor: "pointer" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                        <div style={{
+                          width: 18, height: 18, borderRadius: 5, flexShrink: 0,
+                          border: `2px solid ${selected ? T.purple : T.mid}`,
+                          background: selected ? T.purple : T.white,
+                          display: "flex", alignItems: "center", justifyContent: "center",
+                          transition: "all 0.15s",
+                        }}>
+                          {selected && <span style={{ color: T.white, fontSize: 11, lineHeight: 1 }}>✓</span>}
+                        </div>
+                        <span style={{ fontSize: 13, fontWeight: 600, color: selected ? T.purple : T.black }}>{r.name}</span>
                       </div>
-                      <span style={{ fontSize: 13, fontWeight: 600, color: selected ? T.purple : T.black }}>{r.name}</span>
+                      <div style={{ fontSize: 11, color: T.slate, marginTop: 4, marginLeft: 28, lineHeight: 1.5 }}>{r.desc}</div>
+                      <div style={{ fontSize: 10, color: T.purple, marginTop: 4, marginLeft: 28, lineHeight: 1.4, fontStyle: "italic", background: "#DDD6FE", borderRadius: 4, padding: "3px 8px", display: "inline-block" }}>Ej: {r.example}</div>
                     </div>
-                    <div style={{ fontSize: 11, color: T.slate, marginTop: 4, marginLeft: 28, lineHeight: 1.5 }}>{r.desc}</div>
-                    <div style={{ fontSize: 10, color: T.purple, marginTop: 4, marginLeft: 28, lineHeight: 1.4, fontStyle: "italic", background: T.purpleLight, borderRadius: 4, padding: "3px 8px", display: "inline-block" }}>Ej: {r.example}</div>
+                    {selected && (
+                      <div onClick={e => e.stopPropagation()} style={{ padding: "0 12px 10px 12px", borderTop: `1px solid ${T.purpleMid}22` }}>
+                        <textarea
+                          value={(draft.resourceNotes || {})[r.name] || ""}
+                          onChange={e => setDraft(d => ({ ...d, resourceNotes: { ...(d.resourceNotes || {}), [r.name]: e.target.value } }))}
+                          placeholder={`Nota sobre ${r.name}... (restricciones, configuraciones específicas, acuerdos)`}
+                          rows={2}
+                          style={{
+                            width: "100%", borderRadius: 6, border: `1px solid ${T.purpleMid}44`,
+                            padding: "7px 10px", fontSize: 12, fontFamily: "inherit",
+                            color: T.black, boxSizing: "border-box", background: T.white,
+                            outline: "none", resize: "none", marginTop: 8,
+                          }}
+                        />
+                      </div>
+                    )}
                   </div>
                 );
               })}
